@@ -9,14 +9,14 @@ import java.io.IOException;
 
     public class StartPanel extends JPanel {
         // כפתורים
-        public static final int BUTTON_WIDTH = 260;
-        public static final int BUTTON_HEIGHT = 55;
+        public static final int BUTTON_WIDTH = 295;
+        public static final int BUTTON_HEIGHT = 65;
 
-        public static final int START_BUTTON_X = 270;
-        public static final int START_BUTTON_Y = 280;
+        public static final int START_BUTTON_X = 240;
+        public static final int START_BUTTON_Y = 200;
 
-        public static final int INSTRUCTIONS_BUTTON_X = 270;
-        public static final int INSTRUCTIONS_BUTTON_Y = 350;
+        public static final int INSTRUCTIONS_BUTTON_X = 240;
+        public static final int INSTRUCTIONS_BUTTON_Y = 280;
 
         private BufferedImage backgroundImage;
 
@@ -25,7 +25,7 @@ import java.io.IOException;
             setLayout(null);
 
             try {
-                InputStream inputStream = StartPanel.class.getResourceAsStream("/background.jpeg");
+                InputStream inputStream = StartPanel.class.getResourceAsStream("/backgroundd.png");
                 backgroundImage = ImageIO.read(inputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -58,11 +58,14 @@ import java.io.IOException;
 
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
+        //כפתור שקוף:
         private void designButton(JButton button) {
-            button.setFont(new Font("Trebuchet MS", Font.BOLD, 22));
-            button.setForeground(new Color(150, 40, 140));
-            button.setBackground(new Color(230, 255, 245));
+            button.setOpaque(false);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
             button.setFocusPainted(false);
-            button.setBorder(BorderFactory.createLineBorder(new Color(210, 80, 170), 3));
+            button.setText("");
+            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
+
     }

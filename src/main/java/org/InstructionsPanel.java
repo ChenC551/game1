@@ -2,33 +2,49 @@ package org;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.io.IOException;
 
 public class InstructionsPanel extends JPanel {
 
-        public InstructionsPanel() {
-            setLayout(null);
-            setBackground(new Color(255, 220, 240));
+    private BufferedImage backgroundImage;
 
-            JLabel title = new JLabel("HOW TO PLAY", SwingConstants.CENTER);
-            title.setBounds(250, 50, 400, 60);
-            title.setFont(new Font("Trebuchet MS", Font.BOLD, 38));
-            title.setForeground(new Color(150, 40, 140));
-            add(title);
+    public InstructionsPanel() {
+        setLayout(null);
 
-            JLabel instructions = new JLabel(
-                    "<html><div style='text-align:center;'>"
-                            + "Move the girl with the arrow keys.<br><br>"
-                            + "Catch candies and stars to earn points.<br><br>"
-                            + "Avoid bombs — they take away lives.<br><br>"
-                            + "The goal is to collect as many sweets as possible!"
-                            + "</div></html>",
-                    SwingConstants.CENTER
-            );
-
-            instructions.setBounds(170, 140, 560, 220);
-            instructions.setFont(new Font("Trebuchet MS", Font.BOLD, 24));
-            instructions.setForeground(new Color(100, 40, 120));
-            add(instructions);
+        try {
+            InputStream inputStream = InstructionsPanel.class.getResourceAsStream("/instructions.jpeg");
+            backgroundImage = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        JButton backButton = new JButton("BACK");
+        backButton.setBounds(240, 400, 250, 65); // אם צריך, תכווני X/Y
+        designButton(backButton);
+        add(backButton);
+
+        backButton.addActionListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.setContentPane(new StartPanel());
+            frame.revalidate();
+        });
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    private void designButton(JButton button) {
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setText("");
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+}
