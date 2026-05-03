@@ -9,14 +9,14 @@ import java.io.IOException;
 
     public class StartPanel extends JPanel {
         // כפתורים
-        public static final int BUTTON_WIDTH = 295;
-        public static final int BUTTON_HEIGHT = 65;
+        public static final int BUTTON_WIDTH = 270;
+        public static final int BUTTON_HEIGHT = 55;
 
-        public static final int START_BUTTON_X = 240;
-        public static final int START_BUTTON_Y = 200;
+        public static final int START_BUTTON_X = 265;
+        public static final int START_BUTTON_Y = 250;
 
-        public static final int INSTRUCTIONS_BUTTON_X = 240;
-        public static final int INSTRUCTIONS_BUTTON_Y = 280;
+        public static final int INSTRUCTIONS_BUTTON_X = 265;
+        public static final int INSTRUCTIONS_BUTTON_Y = 320;
 
         private BufferedImage backgroundImage;
 
@@ -25,7 +25,7 @@ import java.io.IOException;
             setLayout(null);
 
             try {
-                InputStream inputStream = StartPanel.class.getResourceAsStream("/backgroundd.png");
+                InputStream inputStream = StartPanel.class.getResourceAsStream("/background.png");
                 backgroundImage = ImageIO.read(inputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -60,12 +60,14 @@ import java.io.IOException;
         }
         //כפתור שקוף:
         private void designButton(JButton button) {
-            button.setOpaque(false);
-            button.setContentAreaFilled(false);
-            button.setBorderPainted(false);
-            button.setFocusPainted(false);
-            button.setText("");
-            button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setText("");
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR)); //
+
+
+            }
         }
 
-    }

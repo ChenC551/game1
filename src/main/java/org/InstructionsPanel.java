@@ -15,7 +15,7 @@ public class InstructionsPanel extends JPanel {
         setLayout(null);
 
         try {
-            InputStream inputStream = InstructionsPanel.class.getResourceAsStream("/instructions.jpeg");
+            InputStream inputStream = InstructionsPanel.class.getResourceAsStream("/instructions.png");
             backgroundImage = ImageIO.read(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
