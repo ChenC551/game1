@@ -37,9 +37,16 @@ import java.io.IOException;
             add(startButton);
             startButton.addActionListener(e -> { // גורמת לכפתור לעבור למסך של המשחק
                     JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this); // מוצאת את החלון שבו הפאנל נמצא
-                    frame.setContentPane(new ScenePanel()); //מחליף את המסך למסך של השמחק (הscenePanel)
-                    frame.revalidate(); // מרענן את המסך
-                });
+                ScenePanel scenePanel = new ScenePanel();
+
+                frame.setContentPane(scenePanel);
+                frame.revalidate();
+                frame.repaint();
+
+                SwingUtilities.invokeLater(() -> {
+                    scenePanel.setFocusable(true);
+                    scenePanel.requestFocus();
+                });                });
 
 
             JButton instructionsButton = new JButton("INSTRUCTIONS");

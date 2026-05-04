@@ -10,8 +10,9 @@ public class Bomb extends FallingObject {
 
     private BufferedImage image;
 
-    public Bomb(int x, int y, int width, int height) {
+    public Bomb(int x, int y, int width, int height, int speed) {
         super(x, y, width, height);
+        this.speed = speed;
 
         try {
             InputStream stream = getClass().getResourceAsStream("/bomb.png");
@@ -28,4 +29,10 @@ public class Bomb extends FallingObject {
     public void fall() {
         y += 5;
     }
+
+
+    public Rectangle getRect(){
+        return  new Rectangle(x,y,width,height);
+    }
+
 }

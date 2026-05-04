@@ -38,6 +38,10 @@ public class Player {
             e.printStackTrace();
         }
     }
+
+    public Rectangle getRect(){
+        return  new Rectangle(x +80,y+80,width-190,height-190);
+    }
     public void setDirection(int dir) {
         this.direction = dir;
     }

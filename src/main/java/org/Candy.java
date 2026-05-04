@@ -10,8 +10,9 @@ public class Candy extends FallingObject {
 
     private BufferedImage image;
 
-    public Candy(int x, int y, int width, int height) {
+    public Candy(int x, int y, int width, int height, int speed) {
         super(x, y, width, height);
+        this.speed = speed;
 
         try {
             InputStream stream = getClass().getResourceAsStream("/candy.png");
@@ -25,6 +26,9 @@ public class Candy extends FallingObject {
         y+=5;
     }
 
+    public Rectangle getRect(){
+        return  new Rectangle(x,y,width,height);
+    }
     @Override
     public void draw(Graphics g) {
         g.drawImage(image, x, y, width, height, null);
