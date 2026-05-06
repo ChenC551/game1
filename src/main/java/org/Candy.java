@@ -22,15 +22,22 @@ public class Candy extends FallingObject {
         }
     }
 
-    public void fall (){
+    public void fall () {
         y+=5;
+
     }
 
     public Rectangle getRect(){
-        return  new Rectangle(x,y,width,height);
+        return  new Rectangle(x+40,y+62,50,30);
     }
     @Override
+
     public void draw(Graphics g) {
+
         g.drawImage(image, x, y, width, height, null);
+
+        /* g.setColor(Color.BLUE);
+        Rectangle r = getRect();
+        g.drawRect(r.x, r.y, r.width, r.height); */
     }
 }

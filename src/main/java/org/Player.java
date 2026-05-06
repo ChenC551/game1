@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
+
 public class Player {
     public static final int RIGHT = 1;
     public static final int LEFT = 2;
@@ -37,14 +38,10 @@ public class Player {
             System.err.println("Error reading the image file!");
             e.printStackTrace();
         }
+    }public Rectangle getRect() {
+        return new Rectangle(x + 90, y+40, 50, 30);
     }
 
-    public Rectangle getRect(){
-        return  new Rectangle(x +40,y+80,100,60);
-    }
-    //public Rectangle getBasketRect() {
-    //     return new Rectangle(x + 40, y + 120, 100, 60);
-    //}
 
     public void setDirection(int dir) {
         this.direction = dir;
@@ -65,13 +62,18 @@ public class Player {
         }
     }
 
-    // מתודת הציור שמשתמשת בתנאי
+
     public void draw(Graphics g) {
         if (playerImage != null) {
-            // אם התמונה נטענה בהצלחה, נצייר אותה
+
             g.drawImage(playerImage, x, y, width, height, null);
+
+           /* g.setColor(Color.RED);
+            Rectangle r = getRect();
+            g.drawRect(r.x, r.y, r.width, r.height); */
+
         } else {
-            // אם playerImage הוא null (כי התמונה לא נמצאה), נצייר מלבן אדום כגיבוי
+
             g.setColor(Color.RED);
             g.fillRect(x, y, width, height);
         }

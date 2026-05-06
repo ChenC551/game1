@@ -27,6 +27,12 @@ public class ScenePanel extends JPanel implements Runnable {
     private int explosionX;
     private int explosionY;
     private int explosionFrames = 0;
+    private BufferedImage gameOverImage;
+    private boolean gameOver = false;
+    private BufferedImage winImage;
+    private boolean win = false;
+    private int endScreenSize = 0;
+
 
 
 
@@ -72,14 +78,13 @@ public class ScenePanel extends JPanel implements Runnable {
             livesImages[1] = ImageIO.read(getClass().getResourceAsStream("/lives_1.png"));
             livesImages[2] = ImageIO.read(getClass().getResourceAsStream("/lives_2.png"));
             livesImages[3] = ImageIO.read(getClass().getResourceAsStream("/lives_3.png"));
-
-
-            //livesImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/lives_3.png"));
             scoreBar = ImageIO.read(ScenePanel.class.getResourceAsStream("/score_.png"));
             soundIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/sound_on.png"));
             arrowLeft = ImageIO.read(ScenePanel.class.getResourceAsStream("/arrow_left.png"));
             arrowRight = ImageIO.read(ScenePanel.class.getResourceAsStream("/arrow_right.png"));
             explosionImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/explosion.png"));
+            gameOverImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/game_over.png"));
+            winImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/win.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -89,6 +94,19 @@ public class ScenePanel extends JPanel implements Runnable {
     @Override
     public void run() {
         while (true) {
+            if (gameOver || win) {
+                while (endScreenSize < 400) {
+                    endScreenSize += 20;
+                    repaint();
+
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
 
             // תזוזת השחקנית
             if(getWidth()>0) {
@@ -134,7 +152,6 @@ public class ScenePanel extends JPanel implements Runnable {
     private void checkCollision() {
 
         Rectangle playerRect = player.getRect();
-        // Rectangle playerRect = player.getBasketRect();
 
         // 🍬 סוכריות
         for (int i = 0; i < candies.length; i++) {
@@ -142,6 +159,9 @@ public class ScenePanel extends JPanel implements Runnable {
 
             if (playerRect.intersects(candyRect)) {
                 score += 10;
+                if (score >= 300) {
+                    win = true;
+                }
 
                 // מחזיר למעלה
                 candies[i].setY(-50);
@@ -156,6 +176,10 @@ public class ScenePanel extends JPanel implements Runnable {
             if (playerRect.intersects(bombRect)) {
 
                 lives--; // הורדת חיים
+                if (lives <= 0) {
+                    lives = 0;
+                    gameOver = true;
+                }
 
                 // מיקום הפיצוץ
                 explosionX = bombs[i].getX();
@@ -200,6 +224,23 @@ public class ScenePanel extends JPanel implements Runnable {
 
         g.drawImage(arrowLeft, 10, 400, 65, 65, this);
         g.drawImage(arrowRight, 80, 400, 65, 65, this);
+        if (gameOver) {
+            g.drawImage(gameOverImage,
+                    400 - endScreenSize / 2,
+                    250 - endScreenSize / 3,
+                    endScreenSize,
+                    endScreenSize * 250 / 400,
+                    this);
+        }
+
+        if (win) {
+            g.drawImage(winImage,
+                    400 - endScreenSize / 2,
+                    250 - endScreenSize / 3,
+                    endScreenSize,
+                    endScreenSize * 250 / 400,
+                    this);
+        }
 
     }
 
