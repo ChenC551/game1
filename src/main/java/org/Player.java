@@ -40,11 +40,16 @@ public class Player {
     }
 
     public Rectangle getRect(){
-        return  new Rectangle(x +80,y+80,width-190,height-190);
+        return  new Rectangle(x +40,y+80,100,60);
     }
+    //public Rectangle getBasketRect() {
+    //     return new Rectangle(x + 40, y + 120, 100, 60);
+    //}
+
     public void setDirection(int dir) {
         this.direction = dir;
     }
+
 
     public void move(int panelWidth) {
         if (direction == RIGHT) {

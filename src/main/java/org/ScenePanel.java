@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
+
 public class ScenePanel extends JPanel implements Runnable {
 
     private BufferedImage backgroundImage;
-    private BufferedImage livesImage;
+    private BufferedImage [] livesImages = new BufferedImage[4];
+    private int lives = 3;
     private BufferedImage scoreBar;
     private BufferedImage soundIcon;
     private BufferedImage arrowLeft;
@@ -24,7 +26,9 @@ public class ScenePanel extends JPanel implements Runnable {
     private boolean showExplosion = false;
     private int explosionX;
     private int explosionY;
-    private int lives = 3;
+    private int explosionFrames = 0;
+
+
 
 
     Thread gameThread;
@@ -64,8 +68,13 @@ public class ScenePanel extends JPanel implements Runnable {
         try {
             InputStream inputStream = ScenePanel.class.getResourceAsStream("/game__background.png");
             backgroundImage = ImageIO.read(inputStream);
+            livesImages[0] = ImageIO.read(getClass().getResourceAsStream("/lives_0.png"));
+            livesImages[1] = ImageIO.read(getClass().getResourceAsStream("/lives_1.png"));
+            livesImages[2] = ImageIO.read(getClass().getResourceAsStream("/lives_2.png"));
+            livesImages[3] = ImageIO.read(getClass().getResourceAsStream("/lives_3.png"));
 
-            livesImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/lives_3.png"));
+
+            //livesImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/lives_3.png"));
             scoreBar = ImageIO.read(ScenePanel.class.getResourceAsStream("/score_.png"));
             soundIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/sound_on.png"));
             arrowLeft = ImageIO.read(ScenePanel.class.getResourceAsStream("/arrow_left.png"));
@@ -105,13 +114,18 @@ public class ScenePanel extends JPanel implements Runnable {
                     bombs[i].setY(-50);
                     bombs[i].setX(random.nextInt(800));
                 }
+                if (explosionFrames > 0) {
+                    explosionFrames--;
+                } else {
+                    showExplosion = false;
+                }
             }
 
             checkCollision();
             repaint(); // ציור מחדש
 
             try {
-                Thread.sleep(20); // שליטה במהירות
+                Thread.sleep(50); // שליטה במהירות
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -120,6 +134,7 @@ public class ScenePanel extends JPanel implements Runnable {
     private void checkCollision() {
 
         Rectangle playerRect = player.getRect();
+        // Rectangle playerRect = player.getBasketRect();
 
         // 🍬 סוכריות
         for (int i = 0; i < candies.length; i++) {
@@ -146,6 +161,7 @@ public class ScenePanel extends JPanel implements Runnable {
                 explosionX = bombs[i].getX();
                 explosionY = bombs[i].getY();
                 showExplosion = true;
+                explosionFrames = 20;
 
                 // מחזיר את הפצצה למעלה
                 bombs[i].setY(-50);
@@ -160,6 +176,7 @@ public class ScenePanel extends JPanel implements Runnable {
 
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
+
         for (int i = 0; i < candies.length; i++) {
             candies[i].draw(g);
         }
@@ -171,7 +188,7 @@ public class ScenePanel extends JPanel implements Runnable {
         }
         player.draw(g);
 
-        g.drawImage(livesImage, -20, 5, 230, 80, this);
+        g.drawImage(livesImages[lives], -20, 5, 230, 80, this);
 
         g.drawImage(scoreBar, 290, 3, 230, 90, this);
 
@@ -185,4 +202,5 @@ public class ScenePanel extends JPanel implements Runnable {
         g.drawImage(arrowRight, 80, 400, 65, 65, this);
 
     }
-}
+
+    }
