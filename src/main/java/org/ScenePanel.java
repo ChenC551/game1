@@ -217,6 +217,7 @@ public class ScenePanel extends JPanel implements Runnable {
             if (playerRect.intersects(bombRect)) {
 
                 lives--; // הורדת חיים
+                playSound("explosion.wav");
                 if (lives <= 0) {
                     lives = 0;
                     gameOver = true;
@@ -293,6 +294,25 @@ public class ScenePanel extends JPanel implements Runnable {
                     this);
         }
 
+
+    }
+    public void playSound(String fileName) {
+        try {
+            // טעינת הקובץ מתיקיית ה-resources
+            java.net.URL url = getClass().getResource("/" + fileName);
+            if (url == null) {
+                System.out.println("Error: Could not find file " + fileName);
+                return;
+            }
+
+            javax.sound.sampled.AudioInputStream audioIn = javax.sound.sampled.AudioSystem.getAudioInputStream(url);
+            javax.sound.sampled.Clip clip = javax.sound.sampled.AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     }
