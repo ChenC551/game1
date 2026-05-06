@@ -24,15 +24,14 @@ public class Bomb extends FallingObject {
 
     public void draw(Graphics g) {
         g.drawImage(image, x, y, width, height, null);
+
+       /* g.setColor(Color.BLUE);
+        Rectangle r = getRect();
+        g.drawRect(r.x, r.y, r.width, r.height); */
     }
 
-    public void fall() {
-        y += 5;
-    }
-
-
-    public Rectangle getRect(){
-        return  new Rectangle(x,y,width,height);
+    public Rectangle getRect() {
+        return new Rectangle(x+80, y + 100, 30, 20);
     }
 
 }
