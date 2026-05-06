@@ -160,7 +160,6 @@ public class ScenePanel extends JPanel implements Runnable {
 
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
-
         for (int i = 0; i < candies.length; i++) {
             candies[i].draw(g);
         }
@@ -184,9 +183,6 @@ public class ScenePanel extends JPanel implements Runnable {
 
         g.drawImage(arrowLeft, 10, 400, 65, 65, this);
         g.drawImage(arrowRight, 80, 400, 65, 65, this);
-
-
-
 
     }
 }
