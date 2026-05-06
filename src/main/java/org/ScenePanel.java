@@ -34,7 +34,8 @@ public class ScenePanel extends JPanel implements Runnable {
     private int endScreenSize = 0;
     private JButton playAgainButton;
     private JButton homeButton;
-
+    private SoundManager soundManager = new SoundManager();
+    private boolean winSoundPlayed = false;
 
 
     Thread gameThread;
@@ -113,6 +114,7 @@ public class ScenePanel extends JPanel implements Runnable {
             explosionImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/explosion.png"));
             gameOverImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/gameOver.png"));
             winImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/winner.png"));
+            soundManager.playBackgroundMusic("/MUSICBEKROUND.wav");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -201,9 +203,6 @@ public class ScenePanel extends JPanel implements Runnable {
 
             if (playerRect.intersects(candyRect)) {
                 score += 10;
-                if (score >= 300) {
-                    win = true;
-                }
 
                 // מחזיר למעלה
                 candies[i].setY(-50);
@@ -232,6 +231,16 @@ public class ScenePanel extends JPanel implements Runnable {
                 // מחזיר את הפצצה למעלה
                 bombs[i].setY(-50);
                 bombs[i].setX(random.nextInt(800));
+            }
+        }
+        if (score >= 30 && !win) {
+            win = true;
+
+            soundManager.stopBackgroundMusic();
+
+            if (!winSoundPlayed) {
+                soundManager.playEffect("/win.wav");
+                winSoundPlayed = true;
             }
         }
     }

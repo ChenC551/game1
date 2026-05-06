@@ -50,5 +50,11 @@ public class SoundManager {
             backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
+    public void stopBackgroundMusic() {
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.close();
+        }
+    }
 }
 
