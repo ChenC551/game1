@@ -54,11 +54,11 @@ public class Player {
         } else if (direction == LEFT) {
             x -= speed;
         }
-        if (x<-40){
-            x=-40;
+        if (x<-45){
+            x=-45;
         }
-        if (x > panelWidth - width+40) {
-            x = panelWidth - width;
+        if (x > panelWidth - width+70) {
+            x = panelWidth - width+70;
         }
     }
 

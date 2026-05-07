@@ -296,7 +296,7 @@ public class ScenePanel extends JPanel implements Runnable {
                 bombs[i].setX(random.nextInt(800));
             }
         }
-        if (score >= 30 && !win) {
+        if (score >= 100 && !win) {
             win = true;
             soundManager.stopBackgroundMusic();
             soundManager.stopEffect();
@@ -330,7 +330,7 @@ public class ScenePanel extends JPanel implements Runnable {
 
         g.drawImage(livesImages[lives], -20, 5, 230, 80, this);
 
-        g.drawImage(scoreBar, 290, 3, 230, 90, this);
+        g.drawImage(scoreBar, 310, 3, 230, 90, this);
 
         g.setColor(new Color(90, 20, 90));
         g.setFont(new Font("Arial", Font.BOLD, 22));
