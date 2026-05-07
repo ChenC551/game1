@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 public class SoundManager {
     private Clip backgroundMusic;
+    private Clip effectClip;
     private boolean isMuted = false;
 
     // טעינת מוזיקת רקע
@@ -32,9 +33,9 @@ public class SoundManager {
             InputStream is = getClass().getResourceAsStream(path);
             InputStream bufferedIn = new BufferedInputStream(is);
             AudioInputStream ais = AudioSystem.getAudioInputStream(bufferedIn);
-            Clip clip = AudioSystem.getClip();
-            clip.open(ais);
-            clip.start();
+            effectClip = AudioSystem.getClip();
+            effectClip.open(ais);
+            effectClip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,5 +57,14 @@ public class SoundManager {
             backgroundMusic.close();
         }
     }
+    public void stopEffect() {
+
+        if (effectClip != null && effectClip.isRunning()) {
+
+            effectClip.stop();
+            effectClip.close();
+        }
+    }
+
 }
 

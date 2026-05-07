@@ -54,10 +54,10 @@ public class Player {
         } else if (direction == LEFT) {
             x -= speed;
         }
-        if (x<0){
-            x=0;
+        if (x<-40){
+            x=-40;
         }
-        if (x > panelWidth - width) {
+        if (x > panelWidth - width+40) {
             x = panelWidth - width;
         }
     }
@@ -77,5 +77,13 @@ public class Player {
             g.setColor(Color.RED);
             g.fillRect(x, y, width, height);
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

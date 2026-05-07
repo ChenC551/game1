@@ -42,17 +42,14 @@ import java.io.IOException;
                 frame.setContentPane(scenePanel);
                 frame.revalidate();
                 frame.repaint();
-
-                SwingUtilities.invokeLater(() -> {
-                    scenePanel.setFocusable(true);
-                    scenePanel.requestFocus();
-                });                });
+              });
 
 
             JButton instructionsButton = new JButton("INSTRUCTIONS");
             instructionsButton.setBounds(INSTRUCTIONS_BUTTON_X, INSTRUCTIONS_BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
             designButton(instructionsButton);
             add(instructionsButton);
+
             instructionsButton.addActionListener(e -> {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
                 frame.setContentPane(new InstructionsPanel());
