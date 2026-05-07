@@ -263,6 +263,7 @@ public class ScenePanel extends JPanel implements Runnable {
 
             if (playerRect.intersects(candyRect)) {
                 score += 10;
+                soundManager.playEffect("/candy_Win.wav");
 
                 // מחזיר למעלה
                 candies[i].setY(-50);
@@ -296,7 +297,7 @@ public class ScenePanel extends JPanel implements Runnable {
                 bombs[i].setX(random.nextInt(800));
             }
         }
-        if (score >= 30 && !win) {
+        if (score >= 300 && !win) {
             win = true;
             soundManager.stopBackgroundMusic();
             soundManager.stopEffect();
