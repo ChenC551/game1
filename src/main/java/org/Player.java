@@ -1,4 +1,5 @@
 package org;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,7 +25,7 @@ public class Player { //המחלקה שמייצגת את הדמות עצמה
 
     public Player(int x, int y) { // מיקום התחלתי
         this.x = x;
-        this.y  = y;
+        this.y = y;
 
         try {
             // טעינת הנתיב של התמונה מתוך תיקיית ה-resources
@@ -40,8 +41,10 @@ public class Player { //המחלקה שמייצגת את הדמות עצמה
             System.err.println("Error reading the image file!");
             e.printStackTrace();
         }
-    }public Rectangle getRect() { //יוצר מלבן להתנגשות. המלבן קטן יותר מהתמונה כדי שהפגיעה תהיה מדויקת.
-        return new Rectangle(x + 90, y+40, 50, 30);
+    }
+
+    public Rectangle getRect() { //יוצר מלבן להתנגשות. המלבן קטן יותר מהתמונה כדי שהפגיעה תהיה מדויקת.
+        return new Rectangle(x + 90, y + 40, 50, 30);
     }
 
 
@@ -56,11 +59,11 @@ public class Player { //המחלקה שמייצגת את הדמות עצמה
         } else if (direction == LEFT) {
             x -= speed;
         }
-        if (x<-40){ //גבול שמאל של המסך
-            x=-40;//מונע מהשחקן לצאת יותר מדי שמאלה
+        if (x < -40) { //גבול שמאל של המסך
+            x = -40;//מונע מהשחקן לצאת יותר מדי שמאלה
         }
-        if (x > panelWidth - width+40) { //גבול ימין של המסך בודק אם עבר את צד ימין
-            x = panelWidth - width; // מחזיר אותו פנימה
+        if (x > panelWidth - width+60) { //גבול ימין של המסך בודק אם עבר את צד ימין
+            x = panelWidth - width+60; // מחזיר אותו פנימה
         }
     }
 

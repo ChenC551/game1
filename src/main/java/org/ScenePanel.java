@@ -1,4 +1,5 @@
 package org;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,49 +12,48 @@ import java.util.Random;
 public class ScenePanel extends JPanel implements Runnable {
 
     private BufferedImage backgroundImage;    //תמונת הרקע של המשחק.
-    private BufferedImage [] livesImages = new BufferedImage[4];  //מערך תמונות של חיים (0–3 חיים).
+    private BufferedImage[] livesImages = new BufferedImage[4];  //מערך תמונות של חיים (0–3 חיים).
     private int lives = 3; //מספר החיים של השחקן.
     private BufferedImage scoreBar; //תמונה של פס הניקוד.
     //אייקונים של סאונד פועל / כבוי.
     private BufferedImage soundIcon;
     private BufferedImage soundOffIcon;
     private boolean soundMuted = false; //האם הסאונד כבוי.
-    //תמונות של חצים על המסך.
-    private BufferedImage arrowLeft;
-    private BufferedImage arrowRight;
+    private BufferedImage playIcon;
+    private BufferedImage pauseIcon;
+    private boolean paused = false;
     private Random random = new Random(); //מחולל מספרים רנדומליים (למיקום אובייקטים)
     //מערכים של סוכריות ופצצות.
-    private Candy [] candies;
-    private Bomb [] bombs;
+    private Candy[] candies;
+    private Bomb[] bombs;
     private Player player; //השחקן
     private int score = 0; //ניקוד
-  //כל מה שקשור לפיצוץ: תמונה//האם להציג//מיקום//כמה זמן נשאר
+    //כל מה שקשור לפיצוץ: תמונה//האם להציג//מיקום//כמה זמן נשאר
     private BufferedImage explosionImage;
     private boolean showExplosion = false;
     private int explosionX;
     private int explosionY;
     private int explosionFrames = 0;
-   //מסך הפסד.
+    //מסך הפסד.
     private BufferedImage gameOverImage;
     private boolean gameOver = false;
-   //מסך ניצחון.
+    //מסך ניצחון.
     private BufferedImage winImage;
     private boolean win = false;
-   //גודל אנימציה של סוף משחק.
+    //גודל אנימציה של סוף משחק.
     private int endScreenSize = 0;
     //כפתורים אחרי סיום המשחק.
     private JButton playAgainButton;
     private JButton homeButton;
-   //אובייקט שמנהל סאונד.
+    //אובייקט שמנהל סאונד.
     private SoundManager soundManager = new SoundManager();
-   //כדי שהסאונד ניצחון לא יתנגן פעמיים.
+    //כדי שהסאונד ניצחון לא יתנגן פעמיים.
     private boolean winSoundPlayed = false;
     //ספירה לאחור לפני תחילת המשחק.
     private int countdown = 3;
     private boolean gameStarted = false;
     private boolean loseSoundPlayed = false;
     Thread gameThread; //Game Loop (thread)ההלולאה של המשחק
-
 
 
     public ScenePanel() { //בנאי
@@ -79,28 +79,46 @@ public class ScenePanel extends JPanel implements Runnable {
 
         setFocusable(true); //מאפשר לקבל מקשים.
         addKeyListener(new MovementListener(player)); //מחבר מקלדת לשחקן.
+
         addMouseListener(new java.awt.event.MouseAdapter() {  //מאזין ללחיצת עכבר.
-
-
-
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
 
-             //אזור של כפתור סאונד.
-                Rectangle soundButton = new Rectangle(700, 10, 70, 70);//מגדיר את איזור של כפתור הסאונד
+                // אזור של כפתור סאונד
+                Rectangle soundButton = new Rectangle(700, 10, 70, 70);
 
-                if (soundButton.contains(e.getPoint())) { // בודק אם הלחיצה הייתה בתוך איזור כפתור הסאונד
-                    soundMuted = !soundMuted; //הופך מצב סאונד (on/off).
-                    if (soundMuted) { // אם עכשיו הסאונד מושתק
-                        soundManager.stopBackgroundMusic(); //עוצר מוזיקת רקע
-                        soundManager.stopEffect();// עוצר אפקטים
-                    }
-                    else {
-                        soundManager.playBackgroundMusic("/MUSICBEKROUND.wav"); //מנגן מוזיקה.
+                // אזור של כפתור עצירה / המשך
+                Rectangle pauseButton = new Rectangle(12, 425, 52, 52);
+                // אם לחצו על כפתור הסאונד
+                if (soundButton.contains(e.getPoint())) {
+                    soundMuted = !soundMuted;
+
+                    if (soundMuted) {
+                        soundManager.stopBackgroundMusic();
+                        soundManager.stopEffect();
+                    } else {
+                        if (!paused) {
+                            soundManager.playBackgroundMusic("/MUSICBEKROUND.wav");
+                        }
                     }
 
-                    repaint(); //מצייר מחדש כדי לעדכן את האייקוןן של הסאונד
+                    repaint();
+                }
+
+                // אם לחצו על כפתור עצירה / המשך
+                if (pauseButton.contains(e.getPoint()) && gameStarted && !gameOver && !win) {
+                    paused = !paused;
+
+                    if (paused) {
+                        soundManager.stopBackgroundMusic();
+                    } else {
+                        if (!soundMuted) {
+                            soundManager.playBackgroundMusic("/MUSICBEKROUND.wav");
+                        }
+                    }
+
+                    repaint();
                 }
             }
         });
@@ -156,8 +174,8 @@ public class ScenePanel extends JPanel implements Runnable {
             scoreBar = ImageIO.read(ScenePanel.class.getResourceAsStream("/score_.png"));
             soundIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/sound_on.png"));
             soundOffIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/sound_off.png"));
-            arrowLeft = ImageIO.read(ScenePanel.class.getResourceAsStream("/arrow_left.png"));
-            arrowRight = ImageIO.read(ScenePanel.class.getResourceAsStream("/arrow_right.png"));
+            playIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/play.png"));
+            pauseIcon = ImageIO.read(ScenePanel.class.getResourceAsStream("/pause.png"));
             explosionImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/explosion.png"));
             gameOverImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/gameOver.png"));
             winImage = ImageIO.read(ScenePanel.class.getResourceAsStream("/winner.png"));
@@ -169,9 +187,9 @@ public class ScenePanel extends JPanel implements Runnable {
         //SwingUtilities.invokeLater(() -> requestFocusInWindow());
 
 
-
     }
-   private void makeButtonTransparent(JButton button) { //כפתור שקוף
+
+    private void makeButtonTransparent(JButton button) { //כפתור שקוף
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
@@ -209,6 +227,18 @@ public class ScenePanel extends JPanel implements Runnable {
             e.printStackTrace();
         }
         while (true) {
+                if (paused) {
+                    repaint();
+
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    continue;
+                }
+
             if (gameOver || win) {
 
                 while (endScreenSize < 400) {
@@ -230,7 +260,7 @@ public class ScenePanel extends JPanel implements Runnable {
             }
 
             // תזוזת השחקנית
-            if(getWidth()>0) {
+            if (getWidth() > 0) {
                 player.move(getWidth());
             }
 
@@ -270,7 +300,6 @@ public class ScenePanel extends JPanel implements Runnable {
             }
         }
     }
-
 
 
     private void checkCollision() {
@@ -337,7 +366,6 @@ public class ScenePanel extends JPanel implements Runnable {
     }
 
 
-
     @Override
     protected void paintComponent(Graphics g) {//מתודה שאחראית לצייר את הפאנל על המסך
         super.paintComponent(g);
@@ -366,28 +394,22 @@ public class ScenePanel extends JPanel implements Runnable {
 
         if (soundMuted) {
             g.drawImage(soundOffIcon, 700, 10, 70, 70, this);
-        }
-        else {
+        } else {
+
             g.drawImage(soundIcon, 700, 10, 70, 70, this);
         }
-        g.drawImage(arrowLeft, 10, 400, 65, 65, this);
-        g.drawImage(arrowRight, 80, 400, 65, 65, this);
+
+        if (paused) {
+            g.drawImage(playIcon, 5, 410, 52, 52, this);
+        } else {
+            g.drawImage(pauseIcon, 5, 410, 52, 52, this);
+        }
         if (gameOver) {
-            g.drawImage(gameOverImage,
-                    400 - endScreenSize / 2,
-                    250 - endScreenSize / 3,
-                    endScreenSize,
-                    endScreenSize * 250 / 400,
-                    this);
+            g.drawImage(gameOverImage, 400 - endScreenSize / 2, 250 - endScreenSize / 3, endScreenSize, endScreenSize * 250 / 400, this);
         }
 
         if (win) {
-            g.drawImage(winImage,
-                    400 - endScreenSize / 2,
-                    250 - endScreenSize / 3,
-                    endScreenSize,
-                    endScreenSize * 250 / 400,
-                    this);
+            g.drawImage(winImage, 400 - endScreenSize / 2, 250 - endScreenSize / 3, endScreenSize, endScreenSize * 250 / 400, this);
         }
         if (!gameStarted) {
 
@@ -395,25 +417,17 @@ public class ScenePanel extends JPanel implements Runnable {
 
             if (countdown == 3) {
                 text = "3";
-            }
-
-            else if (countdown == 2) {
+            } else if (countdown == 2) {
                 text = "2";
-            }
-
-            else if (countdown == 1) {
+            } else if (countdown == 1) {
                 text = "1";
-            }
-
-            else {
+            } else {
                 text = "GO!";
             }
 
             Graphics2D g2d = (Graphics2D) g;
 
-            g2d.setRenderingHint(
-                    RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
             Font font = new Font("Comic Sans MS", Font.BOLD, 140);
 
@@ -425,7 +439,7 @@ public class ScenePanel extends JPanel implements Runnable {
 
             int x = (getWidth() - textWidth) / 2;
 
-            int y = getHeight() / 2 +50;
+            int y = getHeight() / 2 + 50;
 
             // צל
             g2d.setColor(new Color(255, 105, 180));
@@ -439,7 +453,6 @@ public class ScenePanel extends JPanel implements Runnable {
         }
 
     }
-
 
 
     public void playSound(String fileName) {
@@ -464,4 +477,4 @@ public class ScenePanel extends JPanel implements Runnable {
         }
     }
 
-    }
+}
