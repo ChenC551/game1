@@ -10,108 +10,124 @@ import java.util.Random;
 
 public class ScenePanel extends JPanel implements Runnable {
 
-    private BufferedImage backgroundImage;
-    private BufferedImage [] livesImages = new BufferedImage[4];
-    private int lives = 3;
-    private BufferedImage scoreBar;
+    private BufferedImage backgroundImage;    //תמונת הרקע של המשחק.
+    private BufferedImage [] livesImages = new BufferedImage[4];  //מערך תמונות של חיים (0–3 חיים).
+    private int lives = 3; //מספר החיים של השחקן.
+    private BufferedImage scoreBar; //תמונה של פס הניקוד.
+    //אייקונים של סאונד פועל / כבוי.
     private BufferedImage soundIcon;
     private BufferedImage soundOffIcon;
-    private boolean soundMuted = false;
+    private boolean soundMuted = false; //האם הסאונד כבוי.
+    //תמונות של חצים על המסך.
     private BufferedImage arrowLeft;
     private BufferedImage arrowRight;
-    private Random random = new Random();
+    private Random random = new Random(); //מחולל מספרים רנדומליים (למיקום אובייקטים)
+    //מערכים של סוכריות ופצצות.
     private Candy [] candies;
     private Bomb [] bombs;
-    private Player player;
-    private int score = 0;
+    private Player player; //השחקן
+    private int score = 0; //ניקוד
+  //כל מה שקשור לפיצוץ: תמונה//האם להציג//מיקום//כמה זמן נשאר
     private BufferedImage explosionImage;
     private boolean showExplosion = false;
     private int explosionX;
     private int explosionY;
     private int explosionFrames = 0;
+   //מסך הפסד.
     private BufferedImage gameOverImage;
     private boolean gameOver = false;
+   //מסך ניצחון.
     private BufferedImage winImage;
     private boolean win = false;
+   //גודל אנימציה של סוף משחק.
     private int endScreenSize = 0;
+    //כפתורים אחרי סיום המשחק.
     private JButton playAgainButton;
     private JButton homeButton;
+   //אובייקט שמנהל סאונד.
     private SoundManager soundManager = new SoundManager();
+   //כדי שהסאונד ניצחון לא יתנגן פעמיים.
     private boolean winSoundPlayed = false;
+    //ספירה לאחור לפני תחילת המשחק.
     private int countdown = 3;
     private boolean gameStarted = false;
+    private boolean loseSoundPlayed = false;
+    Thread gameThread; //Game Loop (thread)ההלולאה של המשחק
 
-    Thread gameThread;
 
-    public ScenePanel() {
 
-        candies = new Candy[5];
-        bombs = new Bomb[3];
+    public ScenePanel() { //בנאי
+        candies = new Candy[5]; //יצירת 5 סוכריות
+        bombs = new Bomb[3];//יצירת 3 פצצות
 
-        for (int i = 0; i < candies.length; i++) {
-            int x = random.nextInt(800);
-            int y = -random.nextInt(600);
-            int speed = 2 + random.nextInt(4);
-            candies[i] = new Candy(x, y, 130, 160, speed);
+        for (int i = 0; i < candies.length; i++) { //לולאה שמייצרת כל סוכריה.
+            int x = random.nextInt(800); //מיקום X רנדומלי.
+            int y = -random.nextInt(600); //מתחילות מעל המסך
+            int speed = 2 + random.nextInt(4); //מהירות רנדומלית.
+            candies[i] = new Candy(x, y, 130, 160, speed); //יצירת סוכריה.
         }
 
-        for (int i = 0; i < bombs.length; i++) {
-            int x = random.nextInt(800);
-            int y = -random.nextInt(600);
-            int speed = 2 + random.nextInt(4);
-            bombs[i] = new Bomb(x, y, 180, 210, speed);
+        for (int i = 0; i < bombs.length; i++) {  //לולאה שמייצרת כל פצצה.
+            int x = random.nextInt(800);   //מיקום X רנדומלי.
+            int y = -random.nextInt(600);  //מתחילות מעל המסך
+            int speed = 2 + random.nextInt(4); //מהירות רנדומלית
+            bombs[i] = new Bomb(x, y, 180, 210, speed); //יצירת פצצה.
         }
 
         int playerWidth = 210;
-        player = new Player((800 - playerWidth) / 2, 260);
+        player = new Player((800 - playerWidth) / 2, 260); //ממקם שחקן באמצע.
 
-        setFocusable(true);
-        addKeyListener(new MovementListener(player));
-        addMouseListener(new java.awt.event.MouseAdapter() {
+        setFocusable(true); //מאפשר לקבל מקשים.
+        addKeyListener(new MovementListener(player)); //מחבר מקלדת לשחקן.
+        addMouseListener(new java.awt.event.MouseAdapter() {  //מאזין ללחיצת עכבר.
+
+
+
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
 
-                Rectangle soundButton =
-                        new Rectangle(700, 10, 70, 70);
+             //אזור של כפתור סאונד.
+                Rectangle soundButton = new Rectangle(700, 10, 70, 70);//מגדיר את איזור של כפתור הסאונד
 
-                if (soundButton.contains(e.getPoint())) {
-                    soundMuted = !soundMuted;
-                    if (soundMuted) {
-                        soundManager.stopBackgroundMusic();
-                        soundManager.stopEffect();
+                if (soundButton.contains(e.getPoint())) { // בודק אם הלחיצה הייתה בתוך איזור כפתור הסאונד
+                    soundMuted = !soundMuted; //הופך מצב סאונד (on/off).
+                    if (soundMuted) { // אם עכשיו הסאונד מושתק
+                        soundManager.stopBackgroundMusic(); //עוצר מוזיקת רקע
+                        soundManager.stopEffect();// עוצר אפקטים
                     }
                     else {
-                        soundManager.playBackgroundMusic("/MUSICBEKROUND.wav");
+                        soundManager.playBackgroundMusic("/MUSICBEKROUND.wav"); //מנגן מוזיקה.
                     }
 
-                    repaint();
+                    repaint(); //מצייר מחדש כדי לעדכן את האייקוןן של הסאונד
                 }
             }
         });
-
+        //מפעיל את המשחק
         gameThread = new Thread(this);
-        gameThread.start();
+        gameThread.start(); //מפעיל את לולאת המשחק מתחיל את הthread
 
-        setLayout(null);
+        //כפתורי סוף משחק
+        setLayout(null); //אוטומטי כדי למקם כפתורים ידנית עם layout מבטל setBounds
 
-        playAgainButton = new JButton();
-        playAgainButton.setBounds(265, 300, 128, 30);
-        makeButtonTransparent(playAgainButton);
-        playAgainButton.setVisible(false);
-        add(playAgainButton);
+        playAgainButton = new JButton();  //יוצר כפתור משחק מחדש
+        playAgainButton.setBounds(265, 300, 128, 30); //קובעים מיקום וגודל לכפתור
+        makeButtonTransparent(playAgainButton); //הופך את הכפתור לשקוף כדי שישתלב בתמונת הסיום
+        playAgainButton.setVisible(false);//מסתיר את הכפתור בתחילת המשחק
+        add(playAgainButton); //מוסיף את הכפתור לפאנל
 
 
-        homeButton = new JButton();
-        homeButton.setBounds(410, 300, 128, 30);
-        makeButtonTransparent(homeButton);
-        homeButton.setVisible(false);
-        add(homeButton);
+        homeButton = new JButton(); //יוצר כפתור חזרה לבית
+        homeButton.setBounds(410, 300, 128, 30); //קובע מיקום וגודל לכפתור
+        makeButtonTransparent(homeButton); //הופך את הכפתור לשקוף
+        homeButton.setVisible(false);// מסתיר את הכפתור בתחילת המשחק
+        add(homeButton); //מוסיף את הכפתור לפאנל
 
-        playAgainButton.addActionListener(e -> {
-            soundManager.stopEffect();
-            soundManager.stopBackgroundMusic();
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        playAgainButton.addActionListener(e -> {  //מה שקורה כאשר לוחצים על כפתור play again
+            soundManager.stopEffect(); //עוצר אפקטים קיימים
+            soundManager.stopBackgroundMusic(); //עוצר מוזיקת רקע
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this); // מוצא את החלון שבו הפאנל נמצא
             ScenePanel newGame = new ScenePanel();
             frame.setContentPane(newGame);
             frame.revalidate();
@@ -152,6 +168,8 @@ public class ScenePanel extends JPanel implements Runnable {
         }
         //SwingUtilities.invokeLater(() -> requestFocusInWindow());
 
+
+
     }
    private void makeButtonTransparent(JButton button) { //כפתור שקוף
         button.setOpaque(false);
@@ -159,7 +177,6 @@ public class ScenePanel extends JPanel implements Runnable {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
     }
-
 
     @Override
     public void run() {
@@ -253,8 +270,10 @@ public class ScenePanel extends JPanel implements Runnable {
             }
         }
     }
-    private void checkCollision() {
 
+
+
+    private void checkCollision() {
         Rectangle playerRect = player.getRect();
 
         // 🍬 סוכריות
@@ -262,7 +281,7 @@ public class ScenePanel extends JPanel implements Runnable {
             Rectangle candyRect = candies[i].getRect();
 
             if (playerRect.intersects(candyRect)) {
-                score += 10;
+                score += 10; //מעלה ניקוד ב10 אם פוגע בסוכריה
                 soundManager.playEffect("/candy_Win.wav");
 
                 // מחזיר למעלה
@@ -279,12 +298,18 @@ public class ScenePanel extends JPanel implements Runnable {
 
                 lives--; // הורדת חיים
                 playSound("explosion.wav");
-                if (lives <= 0) {
+                if (lives <= 0 && !loseSoundPlayed) {
                     lives = 0;
                     gameOver = true;
+
                     soundManager.stopBackgroundMusic();
                     soundManager.stopEffect();
+
+                    soundManager.playEffect("/loseSound.wav");
+
+                    loseSoundPlayed = true;
                 }
+
 
                 // מיקום הפיצוץ
                 explosionX = bombs[i].getX();
@@ -310,6 +335,8 @@ public class ScenePanel extends JPanel implements Runnable {
             }
         }
     }
+
+
 
     @Override
     protected void paintComponent(Graphics g) {//מתודה שאחראית לצייר את הפאנל על המסך
@@ -412,6 +439,9 @@ public class ScenePanel extends JPanel implements Runnable {
         }
 
     }
+
+
+
     public void playSound(String fileName) {
         if (soundMuted) {
             return;

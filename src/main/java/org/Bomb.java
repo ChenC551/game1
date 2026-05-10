@@ -15,15 +15,15 @@ public class Bomb extends FallingObject {
         this.speed = speed;
 
         try {
-            InputStream stream = getClass().getResourceAsStream("/bomb.png");
-            image = ImageIO.read(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
+            InputStream stream = getClass().getResourceAsStream("/bomb.png");//מוצא את הקובץ
+            image = ImageIO.read(stream);//הופך אותו לתמונה
+        } catch (IOException e) { //מטפל במקרה שהטעינה נכשלה
+            e.printStackTrace(); //"הדפס את פרטי השגיאה כדי שאוכל להבין מה הבעיה
         }
     }
 
     public void draw(Graphics g) {
-        g.drawImage(image, x, y, width, height, null);
+        g.drawImage(image, x, y, width, height, null);//הפקודה שמציירת תמונה של פצצה
 
        /* g.setColor(Color.BLUE);
         Rectangle r = getRect();

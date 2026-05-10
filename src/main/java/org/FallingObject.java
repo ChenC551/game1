@@ -21,7 +21,7 @@ import java.awt.*;
             y += speed;
         }
 
-        public void draw(Graphics g) {
+        public void draw(Graphics g) { //זו מתודת ברירת מחדל שנועדה לתת ציור גנרי שמייצר עיגול אדום במקרה שמחלקה יורשת לא מחליפה אותה עושה ovveride.
             g.setColor(Color.RED);
             g.fillOval(x, y, width, height);
         }
